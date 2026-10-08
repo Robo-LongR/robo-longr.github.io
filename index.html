@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="RoboLongR learns history-dependent rewards with stage-order supervision for long-horizon robot manipulation. Anonymous research project.">
+  <meta name="author" content="Anonymous Authors">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:title" content="RoboLongR — Causally-Consistent Rewards">
+  <meta property="og:description" content="Learning from execution history to improve long-horizon manipulation.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://robo-longr.github.io/assets/teaser.webp">
+  <title>RoboLongR · Anonymous Research Project</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="academic.css?v=1">
+  <script src="script.js?v=2" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header">
+  <div class="nav wrap">
+    <a class="brand" href="#" aria-label="RoboLongR home"><span class="brand-symbol" aria-hidden="true">R<span>↗</span></span>RoboLongR<span class="brand-dot">.</span></a>
+    <nav aria-label="Main navigation"><a href="#method">Method</a><a href="#results">Results</a><a href="#real-world">Real robot</a><a href="#resources">Resources</a></nav>
+    <a class="nav-paper" href="assets/robolongr-paper.pdf" target="_blank" rel="noopener">Paper <span aria-hidden="true">↗</span></a>
+  </div>
+</header>
+<main id="main">
+  <section class="hero wrap">
+    <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> LONG-HORIZON ROBOT LEARNING</p>
+    <h1><span class="hero-name">RoboLongR</span>Causally-Consistent Rewards Teach Robots to<br class="desktop-break"> Progressively Master Long-Horizon Manipulation</h1>
+    <p class="authors">Anonymous Authors <span>·</span> Anonymous research project</p>
+    <p class="hero-summary">A goal-like image is not the whole story.<br>Learn rewards from <strong>what happened before</strong>, then use them to improve what the robot does next.</p>
+    <div class="hero-actions"><a class="button primary" href="assets/robolongr-paper.pdf" target="_blank" rel="noopener"><span aria-hidden="true">↗</span> Read the paper</a><a class="button secondary" href="#method">Explore the method <span aria-hidden="true">↓</span></a></div>
+    <div class="hero-figure">
+      <div class="figure-heading"><span>THE CENTRAL IDEA</span><span>Execution history matters</span></div>
+      <button class="image-button" data-zoom="assets/teaser.webp" data-caption="A goal-like closed drawer can hide an incomplete task. The reward curves in this schematic illustrate the intended behavior, not measured results." aria-label="Enlarge the reward ambiguity illustration"><img src="assets/teaser.webp" width="2200" height="1321" alt="Drawer example contrasting open-place-close with a reordered open-close-place sequence and schematic reward curves." fetchpriority="high"></button>
+      <p class="figure-note">Closing an empty drawer can resemble success. Reward learning should account for whether the object was placed inside. <span>Schematic curves illustrate the intended behavior.</span></p>
+    </div>
+    <div class="metric-strip" aria-label="Research at a glance">
+      <div><span class="metric-value">88</span><span class="metric-label">RLBench pretraining tasks</span></div>
+      <div><span class="metric-value">31.8<span>%</span></span><span class="metric-label">Success on 18 held-out tasks</span><span class="metric-detail">+9.2 percentage points vs. ReWiND</span></div>
+      <div><span class="metric-value">57.5<span>%</span></span><span class="metric-label">Success across 4 real-robot tasks</span><span class="metric-detail">23 of 40 trials · ReWiND: 10 of 40</span></div>
+    </div>
+  </section>
+
+  <section class="section wrap abstract" aria-labelledby="abstract-title">
+    <div class="section-label"><span>01 / OVERVIEW</span><h2 id="abstract-title">Progress has <br>a history.</h2></div>
+    <div class="abstract-copy"><p>Long-horizon manipulation requires distinguishing task completion from visually similar states reached without satisfying essential prerequisites. <strong>RoboLongR</strong> is an offline-to-online framework that targets causally consistent rewards: assessing progress against task prerequisites using execution history.</p><p>Stage-shuffle supervision and recurrent memory encourage execution-order sensitivity. The learned reward guides stage-conditioned policy refinement from behavior cloning to reinforcement learning, while sparse terminal feedback triggers reward correction for repeated high-reward failures.</p><p>We evaluate this objective using synthetic order-perturbation controls and representative real executions, and assess downstream utility through complete-task success and component ablations.</p></div>
+  </section>
+
+  <section class="section tinted" id="method" aria-labelledby="method-title">
+    <div class="wrap">
+      <div class="section-top"><div><p class="eyebrow">02 / THE METHOD</p><h2 id="method-title">From demonstrations<br>to better decisions.</h2></div><p class="section-intro">Order supervision shapes the reward.<br>Interaction tests and refines it.</p></div>
+      <figure class="pipeline"><button class="image-button" data-zoom="assets/pipeline.webp" data-caption="RoboLongR: stage-order reward supervision, demonstration relabeling, stage-conditioned initialization, scheduled online RL, and feedback-driven reward correction." aria-label="Enlarge the RoboLongR pipeline"><img src="assets/pipeline.webp" width="2400" height="909" loading="lazy" alt="RoboLongR pipeline showing reward learning, demonstration relabeling, behavior cloning, online RL, and reward correction."></button><figcaption>Adaptive segments construct reward-training perturbations. Separate coarse stages provide consistent policy conditioning.</figcaption></figure>
+      <ol class="method-steps">
+        <li><span class="step-number">01</span><h3>Supervise execution order</h3><p>Reorder intact demonstration segments to create synthetic negatives. Order-preserving splices discourage indiscriminate cut detection.</p></li>
+        <li><span class="step-number">02</span><h3>Remember prior observations</h3><p>A recurrent reward model carries information across temporal windows. A second training round adapts segmentation to predicted progress.</p></li>
+        <li><span class="step-number">03</span><h3>Refine the policy</h3><p>Initialize with stage-conditioned behavior cloning, then optimize the learned reward through scheduled online reinforcement learning.</p></li>
+        <li><span class="step-number">04</span><h3>Correct recurring failures</h3><p>Sparse terminal feedback triggers reward updates when unsuccessful executions repeatedly receive high predicted progress.</p></li>
+      </ol>
+      <div class="method-note"><strong>What “causally consistent” means here</strong><p>Rewarded progress should be compatible with task prerequisites supported by execution history. Stage-order supervision is a training proxy for this objective. It does not recover a causal graph or certify semantic prerequisite satisfaction.</p></div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="results" aria-labelledby="results-title">
+    <div class="section-top"><div><p class="eyebrow">03 / EXPERIMENTS</p><h2 id="results-title">Evaluate the reward.<br>Measure the whole task.</h2></div><p class="section-intro">Controlled reward diagnostics and<br>downstream policy evaluation.</p></div>
+    <div class="tabs" role="tablist" aria-label="Experimental results"><button role="tab" id="tab-simulation" aria-controls="panel-simulation" aria-selected="true" tabindex="0" data-tab="simulation">RLBench success</button><button role="tab" id="tab-order" aria-controls="panel-order" aria-selected="false" tabindex="-1" data-tab="order">Order sensitivity</button><button role="tab" id="tab-ablation" aria-controls="panel-ablation" aria-selected="false" tabindex="-1" data-tab="ablation">Ablations</button></div>
+    <div class="result-panel" role="tabpanel" id="panel-simulation" aria-labelledby="tab-simulation">
+      <div class="results-text"><span class="result-tag">18 TASKS · 3 SEEDS</span><h3>Higher complete-task success.</h3><p>RoboLongR achieves 31.8% average success on long-horizon tasks excluded from reward pretraining, compared with 22.6% for ReWiND.</p><p>The reported gain is larger on strong-dependency tasks: <strong>14.2 percentage points</strong>, versus 4.2 on weak-dependency tasks.</p><p class="small">50 evaluation trials per task per seed. Target-task demonstrations initialize the policy, and target-task interaction supports online learning. This is not zero-shot policy evaluation. Differences are computed before rounding.</p></div>
+      <div class="bar-chart" aria-label="Average success rates in percent on 18 RLBench tasks">
+        <div class="chart-label"><span>Average success (%)</span><span>0–40</span></div>
+        <div class="bar-row"><span>BC-only</span><div class="track"><span style="--value:19.5%"></span></div><b>7.8</b></div>
+        <div class="bar-row"><span>Sparse-PPO</span><div class="track"><span style="--value:17%"></span></div><b>6.8</b></div>
+        <div class="bar-row"><span>LIV</span><div class="track"><span style="--value:7.25%"></span></div><b>2.9</b></div>
+        <div class="bar-row"><span>Progress+Mono</span><div class="track"><span style="--value:50.25%"></span></div><b>20.1</b></div>
+        <div class="bar-row"><span>ReWiND</span><div class="track"><span style="--value:56.5%"></span></div><b>22.6</b></div>
+        <div class="bar-row ours"><span>RoboLongR</span><div class="track"><span style="--value:79.5%"></span></div><b>31.8</b></div>
+      </div>
+    </div>
+    <div class="result-panel" role="tabpanel" id="panel-order" aria-labelledby="tab-order" hidden>
+      <div class="results-text"><span class="result-tag">HELD-OUT TRAJECTORIES</span><h3>Sensitive to reordered execution.</h3><p>RoboLongR separates demonstrations from synthetic order perturbations, with a larger reward margin and higher pairwise ranking accuracy.</p><p class="small">The small margin on order-preserving splices argues against penalizing every splice. Unmatched boundary statistics remain a possible shortcut. These controls establish discrimination of the tested perturbations, not complete semantic prerequisite verification.</p></div>
+      <div class="table-scroll"><table><caption>Reward-level controls</caption><thead><tr><th scope="col">Metric</th><th scope="col">ReWiND</th><th scope="col">RoboLongR</th></tr></thead><tbody><tr><th scope="row">Order-perturbation margin ↑</th><td>0.04</td><td class="highlight">0.51</td></tr><tr><th scope="row">Ranking accuracy ↑</th><td>54.2%</td><td class="highlight">91.7%</td></tr><tr><th scope="row">Rewound margin ↑</th><td>0.38</td><td>0.42</td></tr><tr><th scope="row">Splice margin ↓</th><td>0.03</td><td>0.06</td></tr><tr><th scope="row">Progress MSE ↓</th><td>0.021</td><td>0.023</td></tr></tbody></table><p class="small">Margin: mean reward on a correct trajectory minus mean reward on its perturbed counterpart.</p></div>
+    </div>
+    <div class="result-panel" role="tabpanel" id="panel-ablation" aria-labelledby="tab-ablation" hidden>
+      <div class="results-text"><span class="result-tag">COMPONENT ANALYSIS</span><h3>Order supervision matters.</h3><p>Removing stage-shuffle produces the largest observed drop in task success among the tested component ablations.</p><p class="small">These comparisons assess each removal within the complete training pipeline. They do not imply independent, additive contributions.</p></div>
+      <div class="table-scroll"><table><caption>Average success on RLBench</caption><thead><tr><th scope="col">Configuration</th><th scope="col">Success</th><th scope="col">Change</th></tr></thead><tbody><tr class="highlight"><th scope="row">RoboLongR</th><td>31.8%</td><td>—</td></tr><tr><th scope="row">Without stage-shuffle</th><td>24.3%</td><td>−7.5 pp</td></tr><tr><th scope="row">Without online correction</th><td>28.4%</td><td>−3.4 pp</td></tr><tr><th scope="row">Without recurrent memory</th><td>28.9%</td><td>−2.9 pp</td></tr><tr><th scope="row">Without stage schedule</th><td>29.8%</td><td>−2.0 pp</td></tr></tbody></table></div>
+    </div>
+    <noscript><p class="small">Additional order-sensitivity results and ablations are available in the downloadable paper. Enable JavaScript to switch result panels.</p></noscript>
+  </section>
+
+  <section class="section real-section" id="real-world" aria-labelledby="real-title"><div class="wrap">
+    <div class="section-top"><div><p class="eyebrow">04 / ON THE REAL ROBOT</p><h2 id="real-title">Four tasks.<br>One complete-execution goal.</h2></div><p class="section-intro">Tool use, assembly, multi-object manipulation,<br>and articulated-object interaction.</p></div>
+    <div class="real-overview"><figure><button class="image-button" data-zoom="assets/real-tasks.webp" data-caption="Four real-robot tasks: Board Wiping, Arch Bridge Construction, Tabletop Tidying, and Drawer Object Storage." aria-label="Enlarge the four real-robot task sequences"><img src="assets/real-tasks.webp" width="2000" height="1725" loading="lazy" alt="Photographs showing the four long-horizon tasks and their subtask sequences."></button></figure><div><div class="platform-line"><img src="assets/platform.webp" width="1600" height="1094" alt="Franka Panda platform with front and right RealSense cameras." loading="lazy"><p><strong>Franka Panda</strong><br>7 degrees of freedom<br>Two Intel RealSense D435 cameras<br>10 GELLO demonstrations per task</p></div><div class="table-scroll"><table><caption>Observed success · 10 trials per task and method</caption><thead><tr><th scope="col">Task</th><th scope="col">ReWiND</th><th scope="col">RoboLongR</th></tr></thead><tbody><tr><th scope="row">Tabletop Tidying</th><td>2 / 10</td><td class="highlight">5 / 10</td></tr><tr><th scope="row">Drawer Object Storage</th><td>2 / 10</td><td class="highlight">7 / 10</td></tr><tr><th scope="row">Arch Bridge Construction</th><td>1 / 10</td><td class="highlight">4 / 10</td></tr><tr><th scope="row">Board Wiping</th><td>5 / 10</td><td class="highlight">7 / 10</td></tr><tr class="total"><th scope="row">Pooled success</th><td>25.0%</td><td class="highlight">57.5%</td></tr></tbody></table></div><p class="small">Pooled Wilson 95% intervals: 14.2–40.2% for ReWiND and 42.2–71.4% for RoboLongR. These trials evaluate a fixed four-task mixture; per-task statistical significance is not established.</p></div></div>
+    <details class="reward-details"><summary>Explore rewards on real executions <span aria-hidden="true">+</span></summary><div class="reward-gallery"><figure><button class="image-button" data-zoom="assets/valid-rewards.webp" data-caption="Predicted rewards and observations on representative valid real-robot executions." aria-label="Enlarge valid-execution reward curves"><img src="assets/valid-rewards.webp" width="2300" height="1163" alt="Reward curves and real camera observations across four valid task executions." loading="lazy"></button><figcaption>Representative valid executions. Both models track progress, with different raw score scales.</figcaption></figure><figure><button class="image-button" data-zoom="assets/order-rewards.webp" data-caption="Representative valid and prerequisite-violating executions. These examples are qualitative and do not establish performance on every failure mode." aria-label="Enlarge valid and invalid execution comparisons"><img src="assets/order-rewards.webp" width="2000" height="1504" alt="Paired reward curves for valid and prerequisite-violating real executions." loading="lazy"></button><figcaption>Valid and prerequisite-violating examples. These curves illustrate reward responses on sampled rollouts, not a comprehensive recovery test.</figcaption></figure></div></details>
+  </div></section>
+
+  <section class="section wrap" id="resources" aria-labelledby="resources-title">
+    <div class="section-top"><div><p class="eyebrow">05 / PAPER & RESOURCES</p><h2 id="resources-title">Explore the task split.</h2></div><p class="section-intro">88 pretraining tasks. 18 evaluation tasks.<br>A transparent separation of training and evaluation.</p></div>
+<div class="resource-links"><a href="assets/robolongr-paper.pdf" target="_blank" rel="noopener"><span>↗</span><strong>Anonymous manuscript</strong><span>Read PDF ↗</span></a></div>
+    <nav class="catalog-nav" aria-label="Task table navigation"><a href="#pretraining-tasks"><b>88</b> Pretraining tasks <span>↓</span></a><a href="#evaluation-tasks"><b>18</b> Evaluation tasks <span>↓</span></a><a href="#success-criteria"><b>04</b> Real-robot criteria <span>↓</span></a></nav>
+    <section class="catalog-block" id="pretraining-tasks" aria-labelledby="pretraining-title">
+      <div class="catalog-heading"><div><p class="eyebrow">REWARD PRETRAINING</p><h3 id="pretraining-title">88 pretraining tasks</h3><p>Successful demonstrations provide the foundation for reward learning.</p></div><span class="count-chip">1,760 demonstrations</span></div>
+      <div class="table-tools"><div class="search-field"><label for="task-search">Search tasks</label><input type="search" id="task-search" placeholder="Search by task or object…" autocomplete="off"></div><p id="task-count" role="status">88 of 88 tasks</p></div>
+      <div class="catalog-scroll pretraining-scroll" role="region" aria-label="88 pretraining tasks and descriptions" tabindex="0"><table class="catalog-table pretraining-table"><caption class="sr-only">88 RLBench reward-pretraining tasks and descriptions</caption><thead><tr><th scope="col">No.</th><th scope="col">Task</th><th scope="col">Description</th></tr></thead><tbody id="pretraining-rows"><tr><td class="row-number">01</td><th scope="row">Basketball In Hoop</th><td>Shoot the ball through the net</td></tr>
+<tr><td class="row-number">02</td><th scope="row">Beat the Buzz</th><td>Slide the ring along the pole without contact</td></tr>
+<tr><td class="row-number">03</td><th scope="row">Change Channel</th><td>Point the remote and change the channel</td></tr>
+<tr><td class="row-number">04</td><th scope="row">Change Clock</th><td>Adjust the needles to the target time</td></tr>
+<tr><td class="row-number">05</td><th scope="row">Close Box</th><td>Close the lid on the box</td></tr>
+<tr><td class="row-number">06</td><th scope="row">Close Door</th><td>Grip the handle and pull the door shut</td></tr>
+<tr><td class="row-number">07</td><th scope="row">Close Drawer</th><td>Slide the specified drawer shut</td></tr>
+<tr><td class="row-number">08</td><th scope="row">Close Fridge</th><td>Shut the fridge door</td></tr>
+<tr><td class="row-number">09</td><th scope="row">Close Grill</th><td>Lower the grill cover by its handle</td></tr>
+<tr><td class="row-number">10</td><th scope="row">Close Jar</th><td>Screw the lid onto the specified jar</td></tr>
+<tr><td class="row-number">11</td><th scope="row">Close Laptop Lid</th><td>Shut the laptop lid</td></tr>
+<tr><td class="row-number">12</td><th scope="row">Close Microwave</th><td>Close the microwave door</td></tr>
+<tr><td class="row-number">13</td><th scope="row">Get Ice From Fridge</th><td>Fill the cup with ice from the fridge</td></tr>
+<tr><td class="row-number">14</td><th scope="row">Hang Frame On Hanger</th><td>Hang the picture frame on the hanger</td></tr>
+<tr><td class="row-number">15</td><th scope="row">Hit Ball With Queue</th><td>Pot the ball into the goal with the cue</td></tr>
+<tr><td class="row-number">16</td><th scope="row">Hockey</th><td>Push the ball into the goal with the stick</td></tr>
+<tr><td class="row-number">17</td><th scope="row">Insert Onto Square Peg</th><td>Slide the ring onto the specified spoke</td></tr>
+<tr><td class="row-number">18</td><th scope="row">Insert Usb In Computer</th><td>Slide the USB stick into the slot</td></tr>
+<tr><td class="row-number">19</td><th scope="row">Lamp Off</th><td>Press the switch to turn the lamp off</td></tr>
+<tr><td class="row-number">20</td><th scope="row">Lamp On</th><td>Press the switch to turn the lamp on</td></tr>
+<tr><td class="row-number">21</td><th scope="row">Lift Numbered Block</th><td>Lift the block with the target number</td></tr>
+<tr><td class="row-number">22</td><th scope="row">Light Bulb In</th><td>Screw the bulb from its holder into the lamp</td></tr>
+<tr><td class="row-number">23</td><th scope="row">Light Bulb Out</th><td>Unscrew the bulb and leave it in the stand</td></tr>
+<tr><td class="row-number">24</td><th scope="row">Meat Off Grill</th><td>Take the specified meat off the grill</td></tr>
+<tr><td class="row-number">25</td><th scope="row">Meat On Grill</th><td>Put the specified meat on the grill</td></tr>
+<tr><td class="row-number">26</td><th scope="row">Move Hanger</th><td>Move the hanger to the other rack</td></tr>
+<tr><td class="row-number">27</td><th scope="row">Open Box</th><td>Open the box lid</td></tr>
+<tr><td class="row-number">28</td><th scope="row">Open Door</th><td>Grip the handle and push the door open</td></tr>
+<tr><td class="row-number">29</td><th scope="row">Open Drawer</th><td>Pull the specified drawer open</td></tr>
+<tr><td class="row-number">30</td><th scope="row">Open Fridge</th><td>Slide the fridge door open</td></tr>
+<tr><td class="row-number">31</td><th scope="row">Open Grill</th><td>Raise the grill cover by its handle</td></tr>
+<tr><td class="row-number">32</td><th scope="row">Open Jar</th><td>Unscrew the lid off the specified jar</td></tr>
+<tr><td class="row-number">33</td><th scope="row">Open Microwave</th><td>Pull the microwave door open</td></tr>
+<tr><td class="row-number">34</td><th scope="row">Open Oven</th><td>Pull the oven door open by its handle</td></tr>
+<tr><td class="row-number">35</td><th scope="row">Open Washing Machine</th><td>Pull the washing machine door open</td></tr>
+<tr><td class="row-number">36</td><th scope="row">Open Window</th><td>Unlock the handle and push the window open</td></tr>
+<tr><td class="row-number">37</td><th scope="row">Open Wine Bottle</th><td>Unscrew and remove the bottle cap</td></tr>
+<tr><td class="row-number">38</td><th scope="row">Phone On Base</th><td>Put the handset back on its base</td></tr>
+<tr><td class="row-number">39</td><th scope="row">Pick And Lift</th><td>Lift the specified block to the target</td></tr>
+<tr><td class="row-number">40</td><th scope="row">Pick And Lift Small</th><td>Lift the specified small object to the target</td></tr>
+<tr><td class="row-number">41</td><th scope="row">Pick Up Cup</th><td>Grasp and lift the specified cup</td></tr>
+<tr><td class="row-number">42</td><th scope="row">Place Hanger On Rack</th><td>Place the clothes hanger on the rack</td></tr>
+<tr><td class="row-number">43</td><th scope="row">Place Shape In Shape Sorter</th><td>Put the shape into its matching slot</td></tr>
+<tr><td class="row-number">44</td><th scope="row">Play Jenga</th><td>Remove the protruding block without toppling</td></tr>
+<tr><td class="row-number">45</td><th scope="row">Plug Charger In Power Supply</th><td>Plug the charger into the mains</td></tr>
+<tr><td class="row-number">46</td><th scope="row">Pour From Cup To Cup</th><td>Pour one cup&#x27;s contents into the other</td></tr>
+<tr><td class="row-number">47</td><th scope="row">Press Switch</th><td>Flick the switch</td></tr>
+<tr><td class="row-number">48</td><th scope="row">Push Button</th><td>Push down the specified button</td></tr>
+<tr><td class="row-number">49</td><th scope="row">Push Buttons</th><td>Push the buttons in the specified order</td></tr>
+<tr><td class="row-number">50</td><th scope="row">Put Bottle In Fridge</th><td>Open the fridge and put the bottle in</td></tr>
+<tr><td class="row-number">51</td><th scope="row">Put Groceries In Cupboard</th><td>Put the specified item in the cupboard</td></tr>
+<tr><td class="row-number">52</td><th scope="row">Put Knife In Knife Block</th><td>Slide the knife into its slot in the block</td></tr>
+<tr><td class="row-number">53</td><th scope="row">Put Knife On Chopping Board</th><td>Move the knife from block to chopping board</td></tr>
+<tr><td class="row-number">54</td><th scope="row">Put Money In Safe</th><td>Put the money on the specified safe shelf</td></tr>
+<tr><td class="row-number">55</td><th scope="row">Put Plate In Colored Dish Rack</th><td>Leave the plate between the specified spokes</td></tr>
+<tr><td class="row-number">56</td><th scope="row">Put Rubbish In Bin</th><td>Drop the rubbish into the bin</td></tr>
+<tr><td class="row-number">57</td><th scope="row">Put Toilet Roll On Stand</th><td>Slide the toilet roll onto its stand</td></tr>
+<tr><td class="row-number">58</td><th scope="row">Put Tray In Oven</th><td>Open the oven and slide the tray in</td></tr>
+<tr><td class="row-number">59</td><th scope="row">Put Umbrella In Umbrella Stand</th><td>Place the umbrella into its stand</td></tr>
+<tr><td class="row-number">60</td><th scope="row">Reach And Drag</th><td>Drag the cube onto the target with the stick</td></tr>
+<tr><td class="row-number">61</td><th scope="row">Reach Target</th><td>Touch the specified sphere with the gripper</td></tr>
+<tr><td class="row-number">62</td><th scope="row">Remove Cups</th><td>Take one cup off the holder onto the table</td></tr>
+<tr><td class="row-number">63</td><th scope="row">Scoop With Spatula</th><td>Scoop the cube up with the spatula and lift</td></tr>
+<tr><td class="row-number">64</td><th scope="row">Screw Nail</th><td>Screw in the nail with the screwdriver</td></tr>
+<tr><td class="row-number">65</td><th scope="row">Slide Block To Target</th><td>Push the block onto the target</td></tr>
+<tr><td class="row-number">66</td><th scope="row">Slide Cabinet Open</th><td>Slide the specified cabinet half open</td></tr>
+<tr><td class="row-number">67</td><th scope="row">Stack Wine</th><td>Slide the bottle onto the wine rack</td></tr>
+<tr><td class="row-number">68</td><th scope="row">Straighten Rope</th><td>Pull each rope end until it is straight</td></tr>
+<tr><td class="row-number">69</td><th scope="row">Sweep To Dustpan</th><td>Brush the dirt into the dustpan</td></tr>
+<tr><td class="row-number">70</td><th scope="row">Take Cup Out From Cabinet</th><td>Open the cabinet and retrieve the cup</td></tr>
+<tr><td class="row-number">71</td><th scope="row">Take Frame Off Hanger</th><td>Slide the photo off the hanger onto the table</td></tr>
+<tr><td class="row-number">72</td><th scope="row">Take Item Out Of Drawer</th><td>Open the drawer and take the cube out</td></tr>
+<tr><td class="row-number">73</td><th scope="row">Take Lid Off Saucepan</th><td>Lift the lid off the saucepan by its handle</td></tr>
+<tr><td class="row-number">74</td><th scope="row">Take Money Out Safe</th><td>Take the money off the shelf onto the table</td></tr>
+<tr><td class="row-number">75</td><th scope="row">Take Off Weighing Scales</th><td>Remove the pepper from the scales</td></tr>
+<tr><td class="row-number">76</td><th scope="row">Take Plate Off Colored Dish Rack</th><td>Remove the plate from the specified spokes</td></tr>
+<tr><td class="row-number">77</td><th scope="row">Take Shoes Out Of Box</th><td>Open the box and put the shoes on the table</td></tr>
+<tr><td class="row-number">78</td><th scope="row">Take Toilet Roll Off Stand</th><td>Slide the roll off its stand onto the table</td></tr>
+<tr><td class="row-number">79</td><th scope="row">Take Tray Out Of Oven</th><td>Open the oven and take the tray out</td></tr>
+<tr><td class="row-number">80</td><th scope="row">Take Umbrella Out Of Umbrella Stand</th><td>Lift the umbrella out of its stand</td></tr>
+<tr><td class="row-number">81</td><th scope="row">Take Usb Out Of Computer</th><td>Remove the USB stick from its port</td></tr>
+<tr><td class="row-number">82</td><th scope="row">Toilet Seat Down</th><td>Close the toilet seat by its lid</td></tr>
+<tr><td class="row-number">83</td><th scope="row">Toilet Seat Up</th><td>Lift the toilet seat upright</td></tr>
+<tr><td class="row-number">84</td><th scope="row">Turn Oven On</th><td>Rotate the leftmost knob to turn the oven on</td></tr>
+<tr><td class="row-number">85</td><th scope="row">Turn Tap</th><td>Grasp and turn the specified tap handle</td></tr>
+<tr><td class="row-number">86</td><th scope="row">Tv On</th><td>Point the remote and turn the television on</td></tr>
+<tr><td class="row-number">87</td><th scope="row">Unplug Charger</th><td>Pull the charger out of its socket</td></tr>
+<tr><td class="row-number">88</td><th scope="row">Weighing Scales</th><td>Put the specified pepper on the scales</td></tr></tbody></table><p class="table-empty" id="task-empty" hidden>No matching tasks. Try another task or object name.</p></div>
+      <p class="table-footnote">20 successful demonstrations per task. Scroll within the table to explore the complete list.</p>
+    </section>
+    <section class="catalog-block" id="evaluation-tasks" aria-labelledby="evaluation-title"><div class="catalog-heading"><div><p class="eyebrow">DOWNSTREAM EVALUATION</p><h3 id="evaluation-title">18 evaluation tasks</h3><p>Excluded from reward pretraining. Grouped by the prominence of physical prerequisites.</p></div><span class="count-chip">9 strong · 9 weak</span></div>
+<figure class="evaluation-gallery"><div class="gallery-label"><strong>All 18 evaluation tasks</strong><span>Click to enlarge ↗</span></div><button class="image-button" data-zoom="assets/evaluation-tasks.webp" data-caption="All 18 held-out RLBench evaluation tasks. Red labels indicate the nine strong-dependency tasks; blue labels indicate the nine weak-dependency tasks." aria-label="Enlarge images of all 18 evaluation tasks"><img src="assets/evaluation-tasks.webp" width="1800" height="1292" loading="lazy" alt="All 18 RLBench evaluation tasks arranged in a grid. Nine strong-dependency tasks appear on the left and nine weak-dependency tasks on the right, each with a labeled simulation image."></button><figcaption><span class="task-key strong-key">Strong dependency</span><span class="task-key weak-key">Weak dependency</span><span>Task scenes from the manuscript.</span></figcaption></figure>
+<div class="dependency-group strong"><div class="group-heading"><span class="group-marker"></span><h4>Strong dependency</h4><span>Prominent physical prerequisites</span><b>9 tasks</b></div><div class="catalog-scroll" role="region" aria-label="Strong dependency evaluation tasks" tabindex="0"><table class="catalog-table evaluation-table"><caption class="sr-only">Strong dependency evaluation tasks, prerequisites, and valid alternative orders</caption><thead><tr><th scope="col">Task</th><th scope="col">Prerequisite structure</th><th scope="col">Valid alternative orders</th></tr></thead><tbody><tr><th scope="row">Put Item In Drawer</th><td>Open drawer<span class="order-arrow" aria-label=" before "> → </span>Place item<span class="order-arrow" aria-label=" before "> → </span>Close drawer</td><td>None across the three subtasks</td></tr>
+<tr><th scope="row">Empty Dishwasher</th><td>Open door<span class="order-arrow" aria-label=" before "> → </span>Pull out rack<span class="order-arrow" aria-label=" before "> → </span>Remove plate</td><td>None</td></tr>
+<tr><th scope="row">Slide Cabinet Open &amp; Place Cups</th><td>Open cabinet<span class="order-arrow" aria-label=" before "> → </span>Place cups</td><td>Cup order, when several cups are used</td></tr>
+<tr><th scope="row">Water Plants</th><td>Grasp can<span class="order-arrow" aria-label=" before "> → </span>Approach plant<span class="order-arrow" aria-label=" before "> → </span>Pour</td><td>None</td></tr>
+<tr><th scope="row">Wipe Desk</th><td>Grasp sponge<span class="order-arrow" aria-label=" before "> → </span>Contact desk<span class="order-arrow" aria-label=" before "> → </span>Remove dirt</td><td>Order among independent dirt patches</td></tr>
+<tr><th scope="row">Block Pyramid</th><td>Bottom layer<span class="order-arrow" aria-label=" before "> → </span>Middle layer<span class="order-arrow" aria-label=" before "> → </span>Top layer</td><td>Placements within one layer</td></tr>
+<tr><th scope="row">Stack Blocks</th><td>Lower block<span class="order-arrow" aria-label=" before "> → </span>Block supported by it</td><td>Orders preserving all support relations</td></tr>
+<tr><th scope="row">Stack Cups</th><td>Support cup<span class="order-arrow" aria-label=" before "> → </span>Cup placed above it</td><td>Orders preserving all support relations</td></tr>
+<tr><th scope="row">Stack Chairs</th><td>Support chair<span class="order-arrow" aria-label=" before "> → </span>Chair placed above it</td><td>Orders preserving all support relations</td></tr></tbody></table></div></div>
+<div class="dependency-group weak"><div class="group-heading"><span class="group-marker"></span><h4>Weak dependency</h4><span>More flexible object order</span><b>9 tasks</b></div><div class="catalog-scroll" role="region" aria-label="Weak dependency evaluation tasks" tabindex="0"><table class="catalog-table evaluation-table"><caption class="sr-only">Weak dependency evaluation tasks, prerequisites, and valid alternative orders</caption><thead><tr><th scope="col">Task</th><th scope="col">Prerequisite structure</th><th scope="col">Valid alternative orders</th></tr></thead><tbody><tr><th scope="row">Place Cups</th><td>Independent placement for each cup</td><td>Any cup order</td></tr>
+<tr><th scope="row">Put All Groceries In Cupboard</th><td>Independent placement for each item</td><td>Any item order</td></tr>
+<tr><th scope="row">Setup Checkers</th><td>Independent placement for each checker</td><td>Any checker order</td></tr>
+<tr><th scope="row">Setup Chess</th><td>Independent placement for each piece</td><td>Any piece order</td></tr>
+<tr><th scope="row">Set The Table</th><td>Independent placement for each tableware item</td><td>Any tableware order</td></tr>
+<tr><th scope="row">Put Books On Bookshelf</th><td>Independent placement for each book</td><td>Any book order</td></tr>
+<tr><th scope="row">Put Shoes In Box</th><td>Open lid<span class="order-arrow" aria-label=" before "> → </span>Place either shoe</td><td>Either shoe order</td></tr>
+<tr><th scope="row">Solve Puzzle</th><td>Independent insertion for each puzzle piece</td><td>Any piece order</td></tr>
+<tr><th scope="row">Empty Container</th><td>Independent transfer for each object</td><td>Any object order</td></tr></tbody></table></div></div>
+<p class="table-footnote">Arrows indicate prerequisite order. Both groups can admit partial orders; this grouping does not imply a single valid sequence for every task.</p></section>
+    <section class="catalog-block" id="success-criteria" aria-labelledby="criteria-title"><div class="catalog-heading"><div><p class="eyebrow">REAL-ROBOT EVALUATION</p><h3 id="criteria-title">What counts as success?</h3><p>Complete-task criteria for each of the four real-robot tasks.</p></div><span class="count-chip">4 tasks</span></div><div class="catalog-scroll" role="region" aria-label="Real-robot task success criteria" tabindex="0"><table class="catalog-table criteria-table"><caption class="sr-only">Four real-robot tasks, prerequisite structure, and success criteria</caption><thead><tr><th scope="col">Task</th><th scope="col">Prerequisite structure</th><th scope="col">Success criterion</th></tr></thead><tbody>
+<tr><th scope="row">Tabletop Tidying</th><td>Stack three cups<span class="order-arrow" aria-label=" before "> → </span>Place the completed stack into the basket</td><td><span class="criterion-dot" aria-hidden="true"></span>All three cups form a stable stack and the complete stack is inside the basket</td></tr>
+<tr><th scope="row">Drawer Object Storage</th><td>Open drawer<span class="order-arrow" aria-label=" before "> → </span>Place object<span class="order-arrow" aria-label=" before "> → </span>Close drawer</td><td><span class="criterion-dot" aria-hidden="true"></span>Object is inside and drawer is fully closed</td></tr>
+<tr><th scope="row">Arch Bridge Construction</th><td>Place both supports<span class="order-arrow" aria-label=" before "> → </span>Place arch</td><td><span class="criterion-dot" aria-hidden="true"></span>Supports remain upright and arch rests on them without toppling</td></tr>
+<tr><th scope="row">Board Wiping</th><td>Retrieve tool<span class="order-arrow" aria-label=" before "> → </span>Wipe marked region</td><td><span class="criterion-dot" aria-hidden="true"></span>Marked region is clean and tool is released</td></tr>
+</tbody></table></div></section>
+    <div class="protocol"><h3>Training and evaluation protocol</h3><p>The pretraining set provides 20 successful demonstrations per RLBench task, totaling 1,760 trajectories. An additional 4,000 Open-X trajectories supply progress supervision and rewound negatives. Each of the 18 evaluation tasks provides 20 demonstrations for reward relabeling and behavior-cloning initialization. Subsequent policy learning and reward correction use target-task interaction.</p><p class="small">The task lists reproduce the manuscript’s task names and descriptions. They are descriptive resources, not a release of trajectory data or benchmark implementation.</p></div>
+    <aside class="limitations"><h3>Scope and limitations</h3><p>Synthetic shuffles may introduce boundary shortcuts and penalize valid alternative orders or recoveries. Whole-rollout correction may suppress valid prefixes or cause reward drift. The framework requires demonstrations, engineered stage cues, and terminal feedback. Broader tests of valid execution orders, successful recoveries, and long-term stability remain future work.</p></aside>
+  </section>
+</main>
+<footer class="footer wrap"><a class="brand" href="#">RoboLongR<span class="brand-dot">.</span></a><p>Anonymous research project<br><span>Learning rewards that account for execution history.</span></p><a href="#main">Back to top ↑</a></footer>
+<dialog id="image-dialog" aria-label="Expanded research figure"><button id="close-dialog" class="close-dialog" aria-label="Close expanded figure">×</button><img id="dialog-image" alt=""><p id="dialog-caption"></p></dialog>
+</body>
+</html>
