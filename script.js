@@ -51,3 +51,20 @@ taskSearch.addEventListener('input', () => {
   taskCount.textContent = `${count} of ${taskRows.length} tasks`;
   taskEmpty.hidden = count > 0;
 });
+
+const outlineLinks = [...document.querySelectorAll('.outline a')];
+const outlineSections = outlineLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+let outlineTick = false;
+function updateOutline() {
+  let current = outlineSections[0];
+  for (const section of outlineSections) if (section.getBoundingClientRect().top <= 150) current = section;
+  for (const link of outlineLinks) {
+    if (link.getAttribute('href') === '#' + current.id) link.setAttribute('aria-current', 'true');
+    else link.removeAttribute('aria-current');
+  }
+  outlineTick = false;
+}
+window.addEventListener('scroll', () => {
+  if (!outlineTick) { outlineTick = true; requestAnimationFrame(updateOutline); }
+}, {passive: true});
+updateOutline();

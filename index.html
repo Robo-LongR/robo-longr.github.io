@@ -6,7 +6,7 @@
   <meta name="description" content="RoboLongR learns history-dependent rewards with stage-order supervision for long-horizon robot manipulation. Anonymous research project.">
   <meta name="author" content="Anonymous Authors">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#e9f5f7">
   <meta property="og:title" content="RoboLongR — Causally-Consistent Rewards">
   <meta property="og:description" content="Learning from execution history to improve long-horizon manipulation.">
   <meta property="og:type" content="website">
@@ -14,8 +14,8 @@
   <title>RoboLongR · Anonymous Research Project</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="academic.css?v=1">
-  <script src="script.js?v=2" defer></script>
+  <link rel="stylesheet" href="reading.css?v=1">
+  <script src="script.js?v=3" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -26,13 +26,17 @@
     <a class="nav-paper" href="assets/robolongr-paper.pdf" target="_blank" rel="noopener">Paper <span aria-hidden="true">↗</span></a>
   </div>
 </header>
+<aside class="outline"><p>ON THIS PAGE</p><nav aria-label="Page outline"><a href="#overview" aria-current="true">Overview</a><a href="#method">Reward learning</a><a href="#results">Experimental results</a><a href="#real-world">Real-robot evaluation</a><a href="#resources">Paper & task resources</a><a class="outline-sub" href="#pretraining-tasks">88 pretraining tasks</a><a class="outline-sub" href="#evaluation-tasks">18 evaluation tasks</a><a class="outline-sub" href="#success-criteria">Success criteria</a><a href="#limitations">Scope & limitations</a></nav></aside>
 <main id="main">
-  <section class="hero wrap">
-    <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> LONG-HORIZON ROBOT LEARNING</p>
-    <h1><span class="hero-name">RoboLongR</span>Causally-Consistent Rewards Teach Robots to<br class="desktop-break"> Progressively Master Long-Horizon Manipulation</h1>
+  <section class="hero wrap" id="overview">
+    <p class="eyebrow">LONG-HORIZON ROBOT LEARNING</p>
+    <h1><span class="hero-name">RoboLongR:</span> Causally-Consistent Rewards Teach Robots to Progressively Master Long-Horizon Manipulation</h1>
     <p class="authors">Anonymous Authors <span>·</span> Anonymous research project</p>
-    <p class="hero-summary">A goal-like image is not the whole story.<br>Learn rewards from <strong>what happened before</strong>, then use them to improve what the robot does next.</p>
     <div class="hero-actions"><a class="button primary" href="assets/robolongr-paper.pdf" target="_blank" rel="noopener"><span aria-hidden="true">↗</span> Read the paper</a><a class="button secondary" href="#method">Explore the method <span aria-hidden="true">↓</span></a></div>
+  <section class="hero-abstract" aria-labelledby="abstract-title">
+    <h2 class="abstract-label" id="abstract-title">Abstract</h2>
+    <div class="abstract-copy"><p>Long-horizon manipulation requires distinguishing task completion from visually similar states reached without satisfying essential prerequisites. <strong>RoboLongR</strong> is an offline-to-online framework that targets causally consistent rewards: assessing progress against task prerequisites using execution history.</p><p>Stage-shuffle supervision and recurrent memory encourage execution-order sensitivity. The learned reward guides stage-conditioned policy refinement from behavior cloning to reinforcement learning, while sparse terminal feedback triggers reward correction for repeated high-reward failures.</p><p>We evaluate this objective using synthetic order-perturbation controls and representative real executions, and assess downstream utility through complete-task success and component ablations.</p></div>
+  </section>
     <div class="hero-figure">
       <div class="figure-heading"><span>THE CENTRAL IDEA</span><span>Execution history matters</span></div>
       <button class="image-button" data-zoom="assets/teaser.webp" data-caption="A goal-like closed drawer can hide an incomplete task. The reward curves in this schematic illustrate the intended behavior, not measured results." aria-label="Enlarge the reward ambiguity illustration"><img src="assets/teaser.webp" width="2200" height="1321" alt="Drawer example contrasting open-place-close with a reordered open-close-place sequence and schematic reward curves." fetchpriority="high"></button>
@@ -45,14 +49,11 @@
     </div>
   </section>
 
-  <section class="section wrap abstract" aria-labelledby="abstract-title">
-    <div class="section-label"><span>01 / OVERVIEW</span><h2 id="abstract-title">Progress has <br>a history.</h2></div>
-    <div class="abstract-copy"><p>Long-horizon manipulation requires distinguishing task completion from visually similar states reached without satisfying essential prerequisites. <strong>RoboLongR</strong> is an offline-to-online framework that targets causally consistent rewards: assessing progress against task prerequisites using execution history.</p><p>Stage-shuffle supervision and recurrent memory encourage execution-order sensitivity. The learned reward guides stage-conditioned policy refinement from behavior cloning to reinforcement learning, while sparse terminal feedback triggers reward correction for repeated high-reward failures.</p><p>We evaluate this objective using synthetic order-perturbation controls and representative real executions, and assess downstream utility through complete-task success and component ablations.</p></div>
-  </section>
+
 
   <section class="section tinted" id="method" aria-labelledby="method-title">
     <div class="wrap">
-      <div class="section-top"><div><p class="eyebrow">02 / THE METHOD</p><h2 id="method-title">From demonstrations<br>to better decisions.</h2></div><p class="section-intro">Order supervision shapes the reward.<br>Interaction tests and refines it.</p></div>
+      <div class="section-top"><div><p class="eyebrow">02 / THE METHOD</p><h2 id="method-title">From demonstrations to better decisions.</h2></div><p class="section-intro">Order supervision shapes the reward.<br>Interaction tests and refines it.</p></div>
       <figure class="pipeline"><button class="image-button" data-zoom="assets/pipeline.webp" data-caption="RoboLongR: stage-order reward supervision, demonstration relabeling, stage-conditioned initialization, scheduled online RL, and feedback-driven reward correction." aria-label="Enlarge the RoboLongR pipeline"><img src="assets/pipeline.webp" width="2400" height="909" loading="lazy" alt="RoboLongR pipeline showing reward learning, demonstration relabeling, behavior cloning, online RL, and reward correction."></button><figcaption>Adaptive segments construct reward-training perturbations. Separate coarse stages provide consistent policy conditioning.</figcaption></figure>
       <ol class="method-steps">
         <li><span class="step-number">01</span><h3>Supervise execution order</h3><p>Reorder intact demonstration segments to create synthetic negatives. Order-preserving splices discourage indiscriminate cut detection.</p></li>
@@ -65,7 +66,7 @@
   </section>
 
   <section class="section wrap" id="results" aria-labelledby="results-title">
-    <div class="section-top"><div><p class="eyebrow">03 / EXPERIMENTS</p><h2 id="results-title">Evaluate the reward.<br>Measure the whole task.</h2></div><p class="section-intro">Controlled reward diagnostics and<br>downstream policy evaluation.</p></div>
+    <div class="section-top"><div><p class="eyebrow">03 / EXPERIMENTS</p><h2 id="results-title">Evaluate the reward. Measure the whole task.</h2></div><p class="section-intro">Controlled reward diagnostics and<br>downstream policy evaluation.</p></div>
     <div class="tabs" role="tablist" aria-label="Experimental results"><button role="tab" id="tab-simulation" aria-controls="panel-simulation" aria-selected="true" tabindex="0" data-tab="simulation">RLBench success</button><button role="tab" id="tab-order" aria-controls="panel-order" aria-selected="false" tabindex="-1" data-tab="order">Order sensitivity</button><button role="tab" id="tab-ablation" aria-controls="panel-ablation" aria-selected="false" tabindex="-1" data-tab="ablation">Ablations</button></div>
     <div class="result-panel" role="tabpanel" id="panel-simulation" aria-labelledby="tab-simulation">
       <div class="results-text"><span class="result-tag">18 TASKS · 3 SEEDS</span><h3>Higher complete-task success.</h3><p>RoboLongR achieves 31.8% average success on long-horizon tasks excluded from reward pretraining, compared with 22.6% for ReWiND.</p><p>The reported gain is larger on strong-dependency tasks: <strong>14.2 percentage points</strong>, versus 4.2 on weak-dependency tasks.</p><p class="small">50 evaluation trials per task per seed. Target-task demonstrations initialize the policy, and target-task interaction supports online learning. This is not zero-shot policy evaluation. Differences are computed before rounding.</p></div>
@@ -91,7 +92,7 @@
   </section>
 
   <section class="section real-section" id="real-world" aria-labelledby="real-title"><div class="wrap">
-    <div class="section-top"><div><p class="eyebrow">04 / ON THE REAL ROBOT</p><h2 id="real-title">Four tasks.<br>One complete-execution goal.</h2></div><p class="section-intro">Tool use, assembly, multi-object manipulation,<br>and articulated-object interaction.</p></div>
+    <div class="section-top"><div><p class="eyebrow">04 / ON THE REAL ROBOT</p><h2 id="real-title">Four tasks. One complete-execution goal.</h2></div><p class="section-intro">Tool use, assembly, multi-object manipulation,<br>and articulated-object interaction.</p></div>
     <div class="real-overview"><figure><button class="image-button" data-zoom="assets/real-tasks.webp" data-caption="Four real-robot tasks: Board Wiping, Arch Bridge Construction, Tabletop Tidying, and Drawer Object Storage." aria-label="Enlarge the four real-robot task sequences"><img src="assets/real-tasks.webp" width="2000" height="1725" loading="lazy" alt="Photographs showing the four long-horizon tasks and their subtask sequences."></button></figure><div><div class="platform-line"><img src="assets/platform.webp" width="1600" height="1094" alt="Franka Panda platform with front and right RealSense cameras." loading="lazy"><p><strong>Franka Panda</strong><br>7 degrees of freedom<br>Two Intel RealSense D435 cameras<br>10 GELLO demonstrations per task</p></div><div class="table-scroll"><table><caption>Observed success · 10 trials per task and method</caption><thead><tr><th scope="col">Task</th><th scope="col">ReWiND</th><th scope="col">RoboLongR</th></tr></thead><tbody><tr><th scope="row">Tabletop Tidying</th><td>2 / 10</td><td class="highlight">5 / 10</td></tr><tr><th scope="row">Drawer Object Storage</th><td>2 / 10</td><td class="highlight">7 / 10</td></tr><tr><th scope="row">Arch Bridge Construction</th><td>1 / 10</td><td class="highlight">4 / 10</td></tr><tr><th scope="row">Board Wiping</th><td>5 / 10</td><td class="highlight">7 / 10</td></tr><tr class="total"><th scope="row">Pooled success</th><td>25.0%</td><td class="highlight">57.5%</td></tr></tbody></table></div><p class="small">Pooled Wilson 95% intervals: 14.2–40.2% for ReWiND and 42.2–71.4% for RoboLongR. These trials evaluate a fixed four-task mixture; per-task statistical significance is not established.</p></div></div>
     <details class="reward-details"><summary>Explore rewards on real executions <span aria-hidden="true">+</span></summary><div class="reward-gallery"><figure><button class="image-button" data-zoom="assets/valid-rewards.webp" data-caption="Predicted rewards and observations on representative valid real-robot executions." aria-label="Enlarge valid-execution reward curves"><img src="assets/valid-rewards.webp" width="2300" height="1163" alt="Reward curves and real camera observations across four valid task executions." loading="lazy"></button><figcaption>Representative valid executions. Both models track progress, with different raw score scales.</figcaption></figure><figure><button class="image-button" data-zoom="assets/order-rewards.webp" data-caption="Representative valid and prerequisite-violating executions. These examples are qualitative and do not establish performance on every failure mode." aria-label="Enlarge valid and invalid execution comparisons"><img src="assets/order-rewards.webp" width="2000" height="1504" alt="Paired reward curves for valid and prerequisite-violating real executions." loading="lazy"></button><figcaption>Valid and prerequisite-violating examples. These curves illustrate reward responses on sampled rollouts, not a comprehensive recovery test.</figcaption></figure></div></details>
   </div></section>
@@ -221,7 +222,7 @@
 <tr><th scope="row">Board Wiping</th><td>Retrieve tool<span class="order-arrow" aria-label=" before "> → </span>Wipe marked region</td><td><span class="criterion-dot" aria-hidden="true"></span>Marked region is clean and tool is released</td></tr>
 </tbody></table></div></section>
     <div class="protocol"><h3>Training and evaluation protocol</h3><p>The pretraining set provides 20 successful demonstrations per RLBench task, totaling 1,760 trajectories. An additional 4,000 Open-X trajectories supply progress supervision and rewound negatives. Each of the 18 evaluation tasks provides 20 demonstrations for reward relabeling and behavior-cloning initialization. Subsequent policy learning and reward correction use target-task interaction.</p><p class="small">The task lists reproduce the manuscript’s task names and descriptions. They are descriptive resources, not a release of trajectory data or benchmark implementation.</p></div>
-    <aside class="limitations"><h3>Scope and limitations</h3><p>Synthetic shuffles may introduce boundary shortcuts and penalize valid alternative orders or recoveries. Whole-rollout correction may suppress valid prefixes or cause reward drift. The framework requires demonstrations, engineered stage cues, and terminal feedback. Broader tests of valid execution orders, successful recoveries, and long-term stability remain future work.</p></aside>
+    <aside class="limitations" id="limitations"><h3>Scope and limitations</h3><p>Synthetic shuffles may introduce boundary shortcuts and penalize valid alternative orders or recoveries. Whole-rollout correction may suppress valid prefixes or cause reward drift. The framework requires demonstrations, engineered stage cues, and terminal feedback. Broader tests of valid execution orders, successful recoveries, and long-term stability remain future work.</p></aside>
   </section>
 </main>
 <footer class="footer wrap"><a class="brand" href="#">RoboLongR<span class="brand-dot">.</span></a><p>Anonymous research project<br><span>Learning rewards that account for execution history.</span></p><a href="#main">Back to top ↑</a></footer>
