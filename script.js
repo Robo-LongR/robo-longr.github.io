@@ -68,3 +68,53 @@ window.addEventListener('scroll', () => {
   if (!outlineTick) { outlineTick = true; requestAnimationFrame(updateOutline); }
 }, {passive: true});
 updateOutline();
+
+// Replay measured results without changing their values or source artwork.
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const chartAnimations = new WeakMap();
+function replayResult(element, frames, options) {
+  chartAnimations.get(element)?.cancel();
+  if (reducedMotion.matches) return;
+  const animation = element.animate(frames, options);
+  chartAnimations.set(element, animation);
+}
+document.querySelectorAll('.bar-row').forEach(row => {
+  const label = row.querySelector(':scope > span').textContent;
+  const value = row.querySelector('b').textContent;
+  row.tabIndex = 0;
+  row.setAttribute('aria-label', `${label}: ${value}% average success`);
+  const tooltip = document.createElement('span');
+  tooltip.className = 'chart-tooltip';
+  tooltip.textContent = `${label} · ${value}% success`;
+  tooltip.setAttribute('aria-hidden', 'true');
+  row.append(tooltip);
+  const replay = () => replayResult(row.querySelector('.track > span'),
+    [{transform:'scaleX(0)'},{transform:'scaleX(1)'}],
+    {duration:800,easing:'cubic-bezier(.22,1,.36,1)'});
+  row.addEventListener('pointerenter', replay);
+  row.addEventListener('focus', replay);
+  row.addEventListener('click', replay);
+});
+document.querySelectorAll('.reward-gallery figure').forEach(figure => {
+  const imageButton = figure.querySelector('.image-button');
+  const img = imageButton.querySelector('img');
+  const controls = document.createElement('div');
+  controls.className = 'curve-controls';
+  const hint = document.createElement('span');
+  hint.textContent = 'Hover to reveal · Click the plot to enlarge';
+  const replayButton = document.createElement('button');
+  replayButton.type = 'button';
+  replayButton.className = 'curve-replay';
+  replayButton.textContent = '↻ Replay';
+  replayButton.setAttribute('aria-label', `Replay ${img.alt}`);
+  controls.append(hint, replayButton);
+  figure.append(controls);
+  const replay = () => {
+    if (!img.complete || !img.naturalWidth) return;
+    replayResult(img,[{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)'}],
+      {duration:1600,easing:'cubic-bezier(.25,.1,.25,1)'});
+  };
+  imageButton.addEventListener('pointerenter', replay);
+  imageButton.addEventListener('focus', replay);
+  replayButton.addEventListener('click', replay);
+});
