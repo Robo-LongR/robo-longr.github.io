@@ -95,26 +95,3 @@ document.querySelectorAll('.bar-row').forEach(row => {
   row.addEventListener('focus', replay);
   row.addEventListener('click', replay);
 });
-document.querySelectorAll('.reward-gallery figure').forEach(figure => {
-  const imageButton = figure.querySelector('.image-button');
-  const img = imageButton.querySelector('img');
-  const controls = document.createElement('div');
-  controls.className = 'curve-controls';
-  const hint = document.createElement('span');
-  hint.textContent = 'Hover to reveal · Click the plot to enlarge';
-  const replayButton = document.createElement('button');
-  replayButton.type = 'button';
-  replayButton.className = 'curve-replay';
-  replayButton.textContent = '↻ Replay';
-  replayButton.setAttribute('aria-label', `Replay ${img.alt}`);
-  controls.append(hint, replayButton);
-  figure.append(controls);
-  const replay = () => {
-    if (!img.complete || !img.naturalWidth) return;
-    replayResult(img,[{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)'}],
-      {duration:1600,easing:'cubic-bezier(.25,.1,.25,1)'});
-  };
-  imageButton.addEventListener('pointerenter', replay);
-  imageButton.addEventListener('focus', replay);
-  replayButton.addEventListener('click', replay);
-});
