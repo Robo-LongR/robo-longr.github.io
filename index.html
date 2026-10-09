@@ -12,16 +12,17 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://robo-longr.github.io/assets/teaser.webp">
   <title>RoboLongR · Anonymous Research Project</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/robolongr-icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/robolongr-icon.png">
   <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="reading.css?v=1">
+  <link rel="stylesheet" href="reading.css?v=2">
   <script src="script.js?v=3" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="header">
   <div class="nav wrap">
-    <a class="brand" href="#" aria-label="RoboLongR home"><span class="brand-symbol" aria-hidden="true">R<span>↗</span></span>RoboLongR<span class="brand-dot">.</span></a>
+    <a class="brand" href="#" aria-label="RoboLongR home"><img class="brand-icon" src="assets/robolongr-icon.png" alt="" width="44" height="44">RoboLongR<span class="brand-dot">.</span></a>
     <nav aria-label="Main navigation"><a href="#method">Method</a><a href="#results">Results</a><a href="#real-world">Real robot</a><a href="#resources">Resources</a></nav>
     <a class="nav-paper" href="assets/robolongr-paper.pdf" target="_blank" rel="noopener">Paper <span aria-hidden="true">↗</span></a>
   </div>
@@ -225,7 +226,7 @@
     <aside class="limitations" id="limitations"><h3>Scope and limitations</h3><p>Synthetic shuffles may introduce boundary shortcuts and penalize valid alternative orders or recoveries. Whole-rollout correction may suppress valid prefixes or cause reward drift. The framework requires demonstrations, engineered stage cues, and terminal feedback. Broader tests of valid execution orders, successful recoveries, and long-term stability remain future work.</p></aside>
   </section>
 </main>
-<footer class="footer wrap"><a class="brand" href="#">RoboLongR<span class="brand-dot">.</span></a><p>Anonymous research project<br><span>Learning rewards that account for execution history.</span></p><a href="#main">Back to top ↑</a></footer>
+<footer class="footer wrap"><a class="brand" href="#"><img class="brand-icon" src="assets/robolongr-icon.png" alt="" width="44" height="44">RoboLongR<span class="brand-dot">.</span></a><p>Anonymous research project<br><span>Learning rewards that account for execution history.</span></p><a href="#main">Back to top ↑</a></footer>
 <dialog id="image-dialog" aria-label="Expanded research figure"><button id="close-dialog" class="close-dialog" aria-label="Close expanded figure">×</button><img id="dialog-image" alt=""><p id="dialog-caption"></p></dialog>
 </body>
 </html>
