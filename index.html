@@ -10,7 +10,7 @@
   <meta property="og:title" content="RoboLongR — Causally-Consistent Rewards">
   <meta property="og:description" content="Learning from execution history to improve long-horizon manipulation.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://robo-longr.github.io/assets/teaser.webp">
+  <meta property="og:image" content="https://robo-longr.github.io/assets/teaser.webp?v=20261011">
   <title>RoboLongR · Anonymous Research Project</title>
   <link rel="icon" href="assets/robolongr-icon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/robolongr-icon.png">
@@ -41,7 +41,7 @@
 <section class="project-video" id="video" aria-labelledby="video-title"><h2 id="video-title">RoboLongR in action</h2><video controls playsinline preload="metadata" poster="assets/real-tasks.webp" aria-label="RoboLongR project video"><source src="assets/robolongr-video.mp4" type="video/mp4">Your browser does not support embedded video. <a href="assets/robolongr-video.mp4">Download the video</a>.</video><p><a href="assets/robolongr-video.mp4" download>Download video ↗</a></p></section>
     <div class="hero-figure">
       <div class="figure-heading"><span>THE CENTRAL IDEA</span><span>Execution history matters</span></div>
-      <button class="image-button" data-zoom="assets/teaser.webp" data-caption="A goal-like closed drawer can hide an incomplete task. The reward curves in this schematic illustrate the intended behavior, not measured results." aria-label="Enlarge the reward ambiguity illustration"><img src="assets/teaser.webp" width="2200" height="1321" alt="Drawer example contrasting open-place-close with a reordered open-close-place sequence and schematic reward curves." fetchpriority="high"></button>
+      <button class="image-button" data-zoom="assets/teaser.webp?v=20261011" data-caption="Reward guidance beyond visual progress. A closed empty drawer can resemble success. Stage-order supervision and execution history encourage prerequisite-sensitive progress estimates. Curves show intended behavior; g1–g3 denote semantic subgoals." aria-label="Enlarge the reward ambiguity illustration"><img src="assets/teaser.webp?v=20261011" width="2200" height="1319" alt="Drawer task prerequisites and failed open-close-attempt-placement execution, contrasted with valid open-place-close execution and schematic reward responses." fetchpriority="high"></button>
       <p class="figure-note">Closing an empty drawer can resemble success. Reward learning should account for whether the object was placed inside. <span>Schematic curves illustrate the intended behavior.</span></p>
     </div>
     <div class="metric-strip" aria-label="Research at a glance">
@@ -56,7 +56,7 @@
   <section class="section tinted" id="method" aria-labelledby="method-title">
     <div class="wrap">
       <div class="section-top"><div><p class="eyebrow">02 / THE METHOD</p><h2 id="method-title">From demonstrations to better decisions.</h2></div><p class="section-intro">Order supervision shapes the reward.<br>Interaction tests and refines it.</p></div>
-      <figure class="pipeline"><button class="image-button" data-zoom="assets/pipeline.webp" data-caption="RoboLongR: stage-order reward supervision, demonstration relabeling, stage-conditioned initialization, scheduled online RL, and feedback-driven reward correction." aria-label="Enlarge the RoboLongR pipeline"><img src="assets/pipeline.webp" width="2400" height="909" loading="lazy" alt="RoboLongR pipeline showing reward learning, demonstration relabeling, behavior cloning, online RL, and reward correction."></button><figcaption>Adaptive segments construct reward-training perturbations. Separate coarse stages provide consistent policy conditioning.</figcaption></figure>
+      <figure class="pipeline"><button class="image-button" data-zoom="assets/pipeline.webp?v=20261011" data-caption="RoboLongR learns rewards to guide downstream policy adaptation. Reward-adaptive stage-shuffle provides order supervision. Coarse stages condition behavior cloning and online RL, while sparse terminal feedback triggers correction for repeated high-scoring failures." aria-label="Enlarge the RoboLongR pipeline"><img src="assets/pipeline.webp?v=20261011" width="2800" height="1094" loading="lazy" alt="RoboLongR pipeline showing reward learning, demonstration relabeling, behavior cloning, online RL, and reward correction."></button><figcaption>Adaptive segments construct reward-training perturbations. Separate coarse stages provide consistent policy conditioning.</figcaption></figure>
       <ol class="method-steps">
         <li><span class="step-number">01</span><h3>Supervise execution order</h3><p>Reorder intact demonstration segments to create synthetic negatives. Order-preserving splices discourage indiscriminate cut detection.</p></li>
         <li><span class="step-number">02</span><h3>Remember prior observations</h3><p>A recurrent reward model carries information across temporal windows. A second training round adapts segmentation to predicted progress.</p></li>
