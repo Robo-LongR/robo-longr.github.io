@@ -15,7 +15,7 @@
   <link rel="icon" href="assets/robolongr-icon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/robolongr-icon.png">
   <link rel="stylesheet" href="styles.css?v=5">
-  <link rel="stylesheet" href="reading.css?v=5">
+  <link rel="stylesheet" href="reading.css?v=6">
   <script src="script.js?v=3" defer></script>
 </head>
 <body>
@@ -24,20 +24,21 @@
   <div class="nav wrap">
     <a class="brand" href="#" aria-label="RoboLongR home"><img class="brand-icon" src="assets/robolongr-icon.png" alt="" width="44" height="44">RoboLongR<span class="brand-dot">.</span></a>
     <nav aria-label="Main navigation"><a href="#method">Method</a><a href="#results">Results</a><a href="#real-world">Real robot</a><a href="#resources">Resources</a></nav>
-    <a class="nav-paper" href="assets/robolongr-paper.pdf" target="_blank" rel="noopener">Paper <span aria-hidden="true">↗</span></a>
+    <a class="nav-paper" href="assets/robolongr-paper.pdf?v=20261011" target="_blank" rel="noopener">Paper <span aria-hidden="true">↗</span></a>
   </div>
 </header>
-<aside class="outline"><p>ON THIS PAGE</p><nav aria-label="Page outline"><a href="#overview" aria-current="true">Overview</a><a href="#method">Reward learning</a><a href="#results">Experimental results</a><a href="#real-world">Real-robot evaluation</a><a href="#resources">Paper & task resources</a><a class="outline-sub" href="#pretraining-tasks">88 pretraining tasks</a><a class="outline-sub" href="#evaluation-tasks">18 evaluation tasks</a><a class="outline-sub" href="#success-criteria">Success criteria</a><a href="#limitations">Scope & limitations</a></nav></aside>
+<aside class="outline"><p>ON THIS PAGE</p><nav aria-label="Page outline"><a href="#overview" aria-current="true">Overview</a><a href="#video">Project video</a><a href="#method">Reward learning</a><a href="#results">Experimental results</a><a href="#real-world">Real-robot evaluation</a><a href="#resources">Paper & task resources</a><a class="outline-sub" href="#pretraining-tasks">88 pretraining tasks</a><a class="outline-sub" href="#evaluation-tasks">18 evaluation tasks</a><a class="outline-sub" href="#success-criteria">Success criteria</a><a href="#limitations">Scope & limitations</a></nav></aside>
 <main id="main">
   <section class="hero wrap" id="overview">
     <p class="eyebrow">LONG-HORIZON ROBOT LEARNING</p>
     <h1><span class="hero-name">RoboLongR:</span> Causally-Consistent Rewards Teach Robots to Progressively Master Long-Horizon Manipulation</h1>
     <p class="authors">Anonymous Authors <span>·</span> Anonymous research project</p>
-    <div class="hero-actions"><a class="button primary" href="assets/robolongr-paper.pdf" target="_blank" rel="noopener"><span aria-hidden="true">↗</span> Read the paper</a><a class="button secondary" href="#method">Explore the method <span aria-hidden="true">↓</span></a></div>
+    <div class="hero-actions"><a class="button primary" href="assets/robolongr-paper.pdf?v=20261011" target="_blank" rel="noopener"><span aria-hidden="true">↗</span> Read the paper</a><a class="button secondary" href="#video">Watch video <span aria-hidden="true">▷</span></a><a class="button secondary" href="#method">Explore the method <span aria-hidden="true">↓</span></a></div>
   <section class="hero-abstract" aria-labelledby="abstract-title">
     <h2 class="abstract-label" id="abstract-title">Abstract</h2>
     <div class="abstract-copy"><p>Long-horizon manipulation requires distinguishing task completion from visually similar states reached without satisfying essential prerequisites. <strong>RoboLongR</strong> is an offline-to-online framework that targets causally consistent rewards: assessing progress against task prerequisites using execution history.</p><p>Stage-shuffle supervision and recurrent memory encourage execution-order sensitivity. The learned reward guides stage-conditioned policy refinement from behavior cloning to reinforcement learning, while sparse terminal feedback triggers reward correction for repeated high-reward failures.</p><p>We evaluate this objective using synthetic order-perturbation controls and representative real executions, and assess downstream utility through complete-task success and component ablations.</p></div>
   </section>
+<section class="project-video" id="video" aria-labelledby="video-title"><h2 id="video-title">RoboLongR in action</h2><video controls playsinline preload="metadata" poster="assets/real-tasks.webp" aria-label="RoboLongR project video"><source src="assets/robolongr-video.mp4" type="video/mp4">Your browser does not support embedded video. <a href="assets/robolongr-video.mp4">Download the video</a>.</video><p><a href="assets/robolongr-video.mp4" download>Download video ↗</a></p></section>
     <div class="hero-figure">
       <div class="figure-heading"><span>THE CENTRAL IDEA</span><span>Execution history matters</span></div>
       <button class="image-button" data-zoom="assets/teaser.webp" data-caption="A goal-like closed drawer can hide an incomplete task. The reward curves in this schematic illustrate the intended behavior, not measured results." aria-label="Enlarge the reward ambiguity illustration"><img src="assets/teaser.webp" width="2200" height="1321" alt="Drawer example contrasting open-place-close with a reordered open-close-place sequence and schematic reward curves." fetchpriority="high"></button>
@@ -100,7 +101,7 @@
 
   <section class="section wrap" id="resources" aria-labelledby="resources-title">
     <div class="section-top"><div><p class="eyebrow">05 / PAPER & RESOURCES</p><h2 id="resources-title">Explore the task split.</h2></div><p class="section-intro">88 pretraining tasks. 18 evaluation tasks.<br>A transparent separation of training and evaluation.</p></div>
-<div class="resource-links"><a href="assets/robolongr-paper.pdf" target="_blank" rel="noopener"><span>↗</span><strong>Anonymous manuscript</strong><span>Read PDF ↗</span></a></div>
+<div class="resource-links"><a href="assets/robolongr-paper.pdf?v=20261011" target="_blank" rel="noopener"><span>↗</span><strong>Anonymous manuscript</strong><span>Read PDF ↗</span></a></div>
     <nav class="catalog-nav" aria-label="Task table navigation"><a href="#pretraining-tasks"><b>88</b> Pretraining tasks <span>↓</span></a><a href="#evaluation-tasks"><b>18</b> Evaluation tasks <span>↓</span></a><a href="#success-criteria"><b>04</b> Real-robot criteria <span>↓</span></a></nav>
     <section class="catalog-block" id="pretraining-tasks" aria-labelledby="pretraining-title">
       <div class="catalog-heading"><div><p class="eyebrow">REWARD PRETRAINING</p><h3 id="pretraining-title">88 pretraining tasks</h3><p>Successful demonstrations provide the foundation for reward learning.</p></div><span class="count-chip">1,760 demonstrations</span></div>
